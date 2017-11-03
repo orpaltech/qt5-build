@@ -1,6 +1,6 @@
 # qt5-build
 
-Provides folder structure and build scripts for Qt5 (version 5.9) and Qt-creator software on Linux OS (tested with Ubuntu 16.04).
+The repository provides folder structure and build scripts for Qt5 (default 5.9) and Qt-creator software on Linux OS (tested with Ubuntu 16.04). Created for use with https://github.com/orpaltech/antenna-analyzer-armbian project in which every board-specific Qt5 build will be placed into a dedicated **qt5-build/qt5/build/[BOARDNAME]** folder.
 
 
 Qt5 Framework
@@ -40,7 +40,7 @@ In order to add or remove a Qt5 module to build you should modify the array QT5_
 Qt-Creator
 ---------------------
 
-Build script requires pre-built Qt5 framework (see chapter above). Default location is /usr/local/qt59. To override Qt5 framework location, please, use:
+Qt-Creator software is used for remote debugging in https://github.com/orpaltech/antenna-analyzer-armbian project. The build script requires pre-built Qt5 framework (see chapter above). Default location is /usr/local/qt59. To override Qt5 framework location, please, use:
 
 
     export QT5_PREFIX = "[your local path to Qt5]"
