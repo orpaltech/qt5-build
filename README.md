@@ -12,8 +12,12 @@ Build script provided will make a set of essential Qt5 modules and deploy them t
 
 
 Typical usage:
+1) to build Qt5
 
     build.sh
+    
+2) to clean 
+
     build.sh clean
 
 By default, the build script will stop right after QtBase configuration is finished so that you can review configuration results. You can switch off the behavior above by changing the variable:
