@@ -69,7 +69,8 @@ if [ $TARGET = clean ]; then
 	exit 0
 fi
 
-export LLVM_INSTALL_DIR=/usr/lib/llvm-3.9
+LLVM_INSTALL_DIR=/usr/lib/llvm-3.9
+export LLVM_INSTALL_DIR=$LLVM_INSTALL_DIR
 
 ${QMAKE} $QTCREATOR_SRC_DIR/qtcreator.pro
 
@@ -78,6 +79,6 @@ make -j 2
 
 # install qtcreator
 sudo rm -rf $QTCREATOR_INSTALL_DIR
-sudo make install INSTALL_ROOT=$QTCREATOR_INSTALL_DIR LLVM_INSTALL_DIR=/usr/lib/llvm-3.9
+sudo make install INSTALL_ROOT=$QTCREATOR_INSTALL_DIR LLVM_INSTALL_DIR=$LLVM_INSTALL_DIR
 
 stopsudo &>/dev/null
