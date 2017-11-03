@@ -11,6 +11,11 @@ Build script provided will make a set of essential Qt5 modules and deploy them t
     export QT5_PREFIX = "[your local path to Qt5]"
 
 
+Typical usage:
+
+    build.sh
+    build.sh clean
+
 By default, the build script will stop right after QtBase configuration is finished so that you can review configuration results. You can switch off the behavior above by changing the variable:
 
 
