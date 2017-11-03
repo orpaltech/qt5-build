@@ -1,5 +1,9 @@
 # qt5-build
 
+
+QT Creator
+---------------------
+
 To override Qt5 framework location use:
 
 
