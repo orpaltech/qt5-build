@@ -1,12 +1,12 @@
-TARGET = $1
+TARGET=$1
 
 if [ -z $TARGET ]; then
 	TARGET="build.release"
 fi
 
-IFS = '.' read -r -a target_array <<< "$TARGET"
-TARGET = ${target_array[0]}
-BUILD = ${target_array[1]}
+IFS='.' read -r -a target_array <<< "$TARGET"
+TARGET=${target_array[0]}
+BUILD=${target_array[1]}
 if [ -z $BUILD ]; then
         BUILD="release"
 fi
@@ -21,26 +21,26 @@ if [ $BUILD != debug ] && [ $BUILD != release ]; then
 	exit 0
 fi
 
-STOP_ON_CONFIG ?= yes
-PWD = $(pwd)
-BUILD_DIR = $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+STOP_ON_CONFIG="${STOP_ON_CONFIG:-yes}"
+PWD=$(pwd)
+BUILD_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd $BUILD_DIR/../../
-QT5_ROOT = $(pwd)
+QT5_ROOT=$(pwd)
 cd $PWD
-QTBASE_SRC = $QT5_ROOT/qtbase
-QT5_GIT_ROOT = https://code.qt.io/qt
-QT5_BRANCH ?= "5.9"
-QT5_PREFIX ?= /usr/local/qt59
-QT5_MODULES = ("qtxmlpatterns" "qtimageformats" "qtsvg" "qtscript" "qtdeclarative" "qtquickcontrols" "qtquickcontrols2" "qtcharts" "qt3d" "qttranslations" "qttools", "qtmultimedia")
+QTBASE_SRC=$QT5_ROOT/qtbase
+QT5_GIT_ROOT=https://code.qt.io/qt
+QT5_BRANCH="${QT5_BRANCH:-5.9}"
+QT5_PREFIX="${QT5_PREFIX:-/usr/local/qt59}"
+QT5_MODULES=("qtxmlpatterns" "qtimageformats" "qtsvg" "qtscript" "qtdeclarative" "qtquickcontrols" "qtquickcontrols2" "qtcharts" "qt3d" "qttranslations" "qttools", "qtmultimedia")
 if [ $BUILD = debug ]; then
         QT5_PREFIX = $BUILD_DIR/dist
         QT5_BUILD = "-developer-build"
 fi
-QMAKE = $QT5_PREFIX/bin/qmake
+QMAKE=$QT5_PREFIX/bin/qmake
 
 startsudo() {
     sudo -v
-    if [[ $? != 0 ]]; then 
+    if [[ $? != 0 ]]; then
 	exit 1
     fi
     ( while true; do sudo -v; sleep 50; done; ) &

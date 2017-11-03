@@ -1,4 +1,4 @@
-TARGET = $1
+TARGET=$1
 if [ -z $TARGET ]; then
 	TARGET="build"
 fi
@@ -6,13 +6,13 @@ if [ $TARGET != build ] && [ $TARGET != clean ]; then
 	echo "Invalid target"
 	exit 1
 fi
-QT5_PREFIX ?= /usr/local/qt59
+QT5_PREFIX="${QT5_PREFIX:-/usr/local/qt59}"
 PWD=$(pwd)
 BUILD_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd $BUILD_DIR/../
 QTCREATOR_SRC=$(pwd)/qt-creator
 cd $PWD
-BRANCH="master"
+QTCREATOR_BRANCH="${QTCREATOR_BRANCH:-master}"
 QMAKE=$QT5_PREFIX/bin/qmake
 if [ ! -e $QMAKE ]; then
 	echo "QT5 make tool not found. Please, build QT5."
@@ -49,14 +49,14 @@ if [ $TARGET = build ]; then
 
 	if [ -d $QTCREATOR_SRC ] && [ -d $QTCREATOR_SRC/.git ] ; then
 		# update sources
-	        git -C $QTCREATOR_SRC fetch origin $BRANCH
-        	git -C $QTCREATOR_SRC reset --hard $BRANCH
+	        git -C $QTCREATOR_SRC fetch origin $QTCREATOR_BRANCH
+        	git -C $QTCREATOR_SRC reset --hard $QTCREATOR_BRANCH
 	        git -C $QTCREATOR_SRC clean -fd
-	        git -C $QTCREATOR_SRC pull origin $BRANCH --recurse-submodules
+	        git -C $QTCREATOR_SRC pull origin $QTCREATOR_BRANCH --recurse-submodules
 	else
 		rm -rf $QTCREATOR_SRC
 	        # clone sources
-		git clone --depth 1 --recursive -b $BRANCH https://code.qt.io/qt-creator/qt-creator.git $QTCREATOR_SRC
+		git clone --depth 1 --recursive -b $QTCREATOR_BRANCH https://code.qt.io/qt-creator/qt-creator.git $QTCREATOR_SRC
 	fi
 fi
 
