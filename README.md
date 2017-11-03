@@ -23,8 +23,9 @@ You can also change Qt5 branch (default 5.9), but this is not guaranteed to work
     
     
 In order to add or remove a Qt5 module to build you should modify the array QT5_MODULES in the script.
---
-Please, note that the script will update system-default Qt to a newly built Qt5 location. If this beehavior is undesired then you have to modify the final part of the script.
+
+
+*Please, note that the script will update system-default Qt to a newly built Qt5 location. If this beehavior is undesired then you have to modify the final part of the script.
 
 
 QT Creator
