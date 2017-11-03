@@ -40,7 +40,7 @@ In order to add or remove a Qt5 module to build you should modify the array QT5_
 Qt-Creator
 ---------------------
 
-Build script requires pre-built Qt5 framework (see chapter above). Default location is /usr/local/qt59. To override Qt5 framework location, please, use:
+Qt-Creator software is used for remote debugging in https://github.com/orpaltech/antenna-analyzer-armbian project. The build script requires pre-built Qt5 framework (see chapter above). Default location is /usr/local/qt59. To override Qt5 framework location, please, use:
 
 
     export QT5_PREFIX = "[your local path to Qt5]"
