@@ -63,14 +63,14 @@ mkdir -p $BUILD_DIR/qt-creator
 
 if [ $TARGET = clean ]; then
 	rm -rf $BUILD_DIR/qt-creator/*
+	rm -rf $QTCREATOR_SRC
 	echo "Clean finished."
 	stopsudo &>/dev/null
 	exit 0
 fi
 
-$QMAKE $QTCREATOR_SRC/qtcreator.pro
-
 cd $BUILD_DIR/qt-creator/
+$QMAKE $QTCREATOR_SRC/qtcreator.pro
 
 make qmake_all
 make -j 2
