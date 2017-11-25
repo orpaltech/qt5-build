@@ -125,11 +125,11 @@ for mod in "${QT5_MODULES[@]}" ; do
 done
 
 if [[ $TARGET = clean ]]; then
-	rm -rf $BUILD_DIR/qtbase/*
-	rm -rf $QT5_ROOT/qtbase/*
+	sudo rm -rf $BUILD_DIR/qtbase/*
+	sudo rm -rf $QT5_ROOT/qtbase/*
 	for mod in "${QT5_MODULES[@]}" ; do
-		rm -rf $BUILD_DIR/${mod}/*
-		rm -rf $QT5_ROOT/${mod}/*
+		sudo rm -rf $BUILD_DIR/${mod}/*
+		sudo rm -rf $QT5_ROOT/${mod}/*
 	done
 
 	echo "Clean finished."
