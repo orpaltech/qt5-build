@@ -5,12 +5,15 @@ if [ $TARGET != build ] && [ $TARGET != clean ]; then
 	echo "Invalid target"
 	exit 1
 fi
-QT5_PREFIX=/usr/local/qt-5.9
+
+QT5_PREFIX=${QT5_PREFIX:="/usr/local/qt-5.9"}
+
 PWD=$(pwd)
 BUILD_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd $BUILD_DIR/../
 QTCREATOR_SRC=$(pwd)/qt-creator
 cd $PWD
+
 BRANCH="master"
 QMAKE=$QT5_PREFIX/bin/qmake
 if [ ! -e $QMAKE ]; then

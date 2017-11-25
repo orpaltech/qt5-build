@@ -17,7 +17,8 @@ if [ $BUILD != debug ] && [ $BUILD != release ]; then
 	exit 0
 fi
 
-STOP_ON_CONFIG=yes
+STOP_ON_CONFIG=${STOP_ON_CONFIG:="yes"}
+
 #====================
 #find root dir
 PWD=$(pwd)
@@ -27,16 +28,16 @@ QT5_ROOT=$(pwd)
 #and get back
 cd $PWD
 #====================
-QTBASE_SRC=$QT5_ROOT/qtbase
 QT5_GIT_ROOT=https://code.qt.io/qt
-QT5_BRANCH="5.9"
-QT5_PREFIX=/usr/local/qt-5.9
+QT5_BRANCH=${QT5_BRANCH:="5.9"}
+QT5_PREFIX=${QT5_PREFIX:="/usr/local/qt-5.9"}
 QT5_MODULES=("qtxmlpatterns" "qtimageformats" "qtsvg" "qtscript" "qtdeclarative" "qtquickcontrols" "qtquickcontrols2" "qtcharts" "qt3d" "qttranslations" "qttools", "qtmultimedia")
 if [ $BUILD = debug ]; then
         QT5_PREFIX=$BUILD_DIR/dist
         QT5_BUILD="-developer-build"
 fi
 QMAKE=$QT5_PREFIX/bin/qmake
+QTBASE_SRC=$QT5_ROOT/qtbase
 
 startsudo() {
     sudo -v
