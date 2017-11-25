@@ -1,15 +1,11 @@
 TARGET=$1
 
-if [ -z $TARGET ]; then
-	TARGET="build.release"
-fi
+[[ -z $TARGET ]] && TARGET="build.release"
 
 IFS='.' read -r -a target_array <<< "$TARGET"
 TARGET=${target_array[0]}
 BUILD=${target_array[1]}
-if [ -z $BUILD ]; then
-        BUILD="release"
-fi
+[[ -z $BUILD ]] && BUILD="release"
 
 if [ $TARGET != build ] && [ $TARGET != clean ]; then
         echo "invalid target"
@@ -21,26 +17,30 @@ if [ $BUILD != debug ] && [ $BUILD != release ]; then
 	exit 0
 fi
 
-STOP_ON_CONFIG="${STOP_ON_CONFIG:-yes}"
+STOP_ON_CONFIG=yes
+#====================
+#find root dir
 PWD=$(pwd)
 BUILD_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd $BUILD_DIR/../../
 QT5_ROOT=$(pwd)
+#and get back
 cd $PWD
+#====================
 QTBASE_SRC=$QT5_ROOT/qtbase
 QT5_GIT_ROOT=https://code.qt.io/qt
-QT5_BRANCH="${QT5_BRANCH:-5.9}"
-QT5_PREFIX="${QT5_PREFIX:-/usr/local/qt59}"
+QT5_BRANCH="5.9"
+QT5_PREFIX=/usr/local/qt-5.9
 QT5_MODULES=("qtxmlpatterns" "qtimageformats" "qtsvg" "qtscript" "qtdeclarative" "qtquickcontrols" "qtquickcontrols2" "qtcharts" "qt3d" "qttranslations" "qttools", "qtmultimedia")
 if [ $BUILD = debug ]; then
-        QT5_PREFIX = $BUILD_DIR/dist
-        QT5_BUILD = "-developer-build"
+        QT5_PREFIX=$BUILD_DIR/dist
+        QT5_BUILD="-developer-build"
 fi
 QMAKE=$QT5_PREFIX/bin/qmake
 
 startsudo() {
     sudo -v
-    if [[ $? != 0 ]]; then
+    if [[ $? != 0 ]]; then 
 	exit 1
     fi
     ( while true; do sudo -v; sleep 50; done; ) &
@@ -58,7 +58,7 @@ startsudo
 
 #############################################################################
 
-if [ $TARGET != clean ]; then 
+if [ $TARGET != clean ]; then
 
 	if [ ! -e /usr/bin/gcc-7 ]; then
 		sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
@@ -70,11 +70,12 @@ if [ $TARGET != clean ]; then
 		sudo apt-get update
                 sudo apt-get -y dist-upgrade
 	fi
+
 	sudo apt-get install -y "^libxcb.*" libx11-xcb-dev libglu1-mesa-dev libxrender-dev libgles2-mesa-dev libglfw3-dev libfreetype6-dev libfontconfig1-dev
 	sudo apt-get install -y libedit-dev
 	sudo apt-get install -y flex bison gperf libicu-dev libxslt-dev
 	sudo apt-get install -y libasound2-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev
-fi 
+fi
 
 #############################################################################
 
@@ -82,12 +83,14 @@ if [ $TARGET != clean ]; then
         echo "Prepare Qt5 sources..."
 
         if [ -d $QTBASE_SRC ] && [ -d $QTBASE_SRC/.git ] ; then
+		echo "Update sources for qtbase..."
                 # update sources
-                sudo git -C $QTBASE_SRC fetch origin $QT5_BRANCH
-                sudo git -C $QTBASE_SRC reset --hard $QT5_BRANCH
+                sudo git -C $QTBASE_SRC fetch
+                sudo git -C $QTBASE_SRC reset --hard
                 sudo git -C $QTBASE_SRC clean -fd
-                sudo git -C $QTBASE_SRC pull origin $QT5_BRANCH --recurse-submodules
+                sudo git -C $QTBASE_SRC pull
         else
+		echo "Download fresh sources for qtbase..."
 		sudo rm -rf $QTBASE_SRC
                 # clone sources
                 sudo git clone --depth 1 --recursive -b $QT5_BRANCH $QT5_GIT_ROOT/qtbase.git $QTBASE_SRC
@@ -95,12 +98,14 @@ if [ $TARGET != clean ]; then
 
 	for mod in "${QT5_MODULES[@]}" ; do
                 if [ -d $QT5_ROOT/$mod ] && [ -d $QT5_ROOT/$mod/.git ] ; then
+			echo "Update sources for ${mod}..."
                         # update sources
-                        sudo git -C $QT5_ROOT/$mod fetch origin $QT5_BRANCH
-                        sudo git -C $QT5_ROOT/$mod reset --hard $QT5_BRANCH
+                        sudo git -C $QT5_ROOT/$mod fetch
+                        sudo git -C $QT5_ROOT/$mod reset --hard
                         sudo git -C $QT5_ROOT/$mod clean -fd
-                        sudo git -C $QT5_ROOT/$mod pull origin $QT5_BRANCH
+                        sudo git -C $QT5_ROOT/$mod pull
                 else
+			echo "Download fresh sources for ${mod}..."
 			sudo rm -rf $QT5_ROOT/$mod
                         # clone sources
                         sudo git clone --depth 1 -b $QT5_BRANCH $QT5_GIT_ROOT/$mod.git $QT5_ROOT/$mod
@@ -115,20 +120,18 @@ fi
 sudo mkdir -p $QT5_PREFIX
 
 mkdir -p $BUILD_DIR/qtbase
-if [ $TARGET = clean ]; then
-	rm -rf $BUILD_DIR/qtbase/*
-fi
-
 for mod in "${QT5_MODULES[@]}" ; do
 	mkdir -p $BUILD_DIR/${mod}
-	if [ $TARGET = clean ]; then
-		rm -rf $BUILD_DIR/${mod}/*
-	fi
 done
 
-#############################################################################
+if [[ $TARGET = clean ]]; then
+	rm -rf $BUILD_DIR/qtbase/*
+	rm -rf $QT5_ROOT/qtbase/*
+	for mod in "${QT5_MODULES[@]}" ; do
+		rm -rf $BUILD_DIR/${mod}/*
+		rm -rf $QT5_ROOT/${mod}/*
+	done
 
-if [ $TARGET = clean ]; then
 	echo "Clean finished."
 	stopsudo &>/dev/null
 	exit 0
