@@ -31,7 +31,7 @@ cd $PWD
 QT5_GIT_ROOT=https://code.qt.io/qt
 QT5_BRANCH=${QT5_BRANCH:="5.9"}
 QT5_PREFIX=${QT5_PREFIX:="/usr/local/qt-5.9"}
-QT5_MODULES=("qtxmlpatterns" "qtimageformats" "qtsvg" "qtscript" "qtdeclarative" "qtquickcontrols" "qtquickcontrols2" "qtcharts" "qt3d" "qttranslations" "qttools", "qtmultimedia")
+QT5_MODULES=("qtxmlpatterns" "qtimageformats" "qtsvg" "qtscript" "qtdeclarative" "qtquickcontrols" "qtquickcontrols2" "qtcharts" "qt3d" "qttranslations" "qttools" "qtmultimedia")
 if [ $BUILD = debug ]; then
         QT5_PREFIX=$BUILD_DIR/dist
         QT5_BUILD="-developer-build"
@@ -76,6 +76,7 @@ if [ $TARGET != clean ]; then
 	sudo apt-get install -y libedit-dev
 	sudo apt-get install -y flex bison gperf libicu-dev libxslt-dev
 	sudo apt-get install -y libasound2-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev
+	sudo apt-get install -y libjpeg-dev
 fi
 
 #############################################################################
