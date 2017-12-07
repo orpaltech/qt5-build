@@ -30,7 +30,7 @@ cd $PWD
 #====================
 QT5_GIT_ROOT=git://code.qt.io/qt
 QT5_BRANCH=${QT5_BRANCH:="5.10"}
-QT5_PREFIX=${QT5_PREFIX:="/usr/local/qt-5.9"}
+QT5_PREFIX=${QT5_PREFIX:="/usr/local/qt-$QT5_BRANCH"}
 QT5_MODULES=("qtxmlpatterns" "qtimageformats" "qtsvg" "qtscript" "qtdeclarative" "qtquickcontrols" "qtquickcontrols2" "qtcharts" "qt3d" "qttranslations" "qttools" "qtmultimedia")
 if [ $BUILD = debug ]; then
         QT5_PREFIX=$BUILD_DIR/dist
