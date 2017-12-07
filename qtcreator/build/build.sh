@@ -6,7 +6,7 @@ if [ $TARGET != build ] && [ $TARGET != clean ]; then
 	exit 1
 fi
 
-QT5_PREFIX=${QT5_PREFIX:="/usr/local/qt-5.9"}
+QT5_PREFIX=${QT5_PREFIX:="/usr/local/qt-5.10"}
 
 PWD=$(pwd)
 BUILD_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
