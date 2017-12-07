@@ -89,7 +89,6 @@ if [ $TARGET != clean ]; then
                 # update sources
                 sudo git -C $QTBASE_SRC fetch
                 sudo git -C $QTBASE_SRC reset --hard
-                sudo git -C $QTBASE_SRC clean -fd
                 sudo git -C $QTBASE_SRC pull
         else
 		echo "Download fresh sources for qtbase..."
@@ -104,7 +103,6 @@ if [ $TARGET != clean ]; then
                         # update sources
                         sudo git -C $QT5_ROOT/$mod fetch
                         sudo git -C $QT5_ROOT/$mod reset --hard
-                        sudo git -C $QT5_ROOT/$mod clean -fd
                         sudo git -C $QT5_ROOT/$mod pull
                 else
 			echo "Download fresh sources for ${mod}..."
