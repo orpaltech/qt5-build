@@ -1,6 +1,6 @@
 # qt5-build
 
-The repository provides folder structure and build scripts for Qt5 (default 5.9) and Qt-creator software on Linux OS (tested with Ubuntu 16.04). Created for use with https://github.com/orpaltech/antenna-analyzer-armbian project in which every board-specific Qt5 build will be placed into a dedicated **qt5-build/qt5/build/[BOARD]** folder.
+The repository provides folder structure and build scripts for Qt5 (default 5.13) and Qt-creator software on Linux OS (tested with Ubuntu 18.04). Created for use with https://github.com/orpaltech/antenna-analyzer-armbian project in which every board-specific Qt5 build will be placed into a dedicated **qt5-build/qt5/build/[BOARD]** folder.
 
 
 Qt5 Framework
