@@ -22,7 +22,7 @@ Typical usage:
 
 3) to clean and remove cloned sources
 
-        build.sh purge
+         build.sh purge
 
 By default, the build script will pause just after qtbase configure so that you can review the resulting configuration. You can switch off the behavior by setting the variable:
 
@@ -61,4 +61,4 @@ Typical usage:
          
 3) to clean and remove cloned sources
 
-        build.sh purge
+         build.sh purge
