@@ -1,14 +1,14 @@
 # qt5-build
 
-The repository provides folder structure and build scripts for Qt5 (default 5.13) and Qt-creator software on Linux OS (tested with Ubuntu 18.04). Created for use with https://github.com/orpaltech/antenna-analyzer-armbian project in which every board-specific Qt5 build will be placed into a dedicated **qt5-build/qt5/build/[BOARD]** folder.
+The repository provides folder structure and build scripts for QT5 (default 5.13) and Qt-creator software on Linux OS (tested with Ubuntu 18.04). Initially was created for https://github.com/orpaltech/antenna-analyzer-armbian project, in which every board-specific QT5 build will be placed into a dedicated **qt5-build/qt5/build/[DEVICE_CONFIG]** folder.
 
 
-Qt5 Framework
+QT5 Framework
 ---------------------
-Build script provided will make a set of essential Qt5 modules and deploy them to /usr/local/qt59. To override Qt5 framework location, please, use:
+Build script provided will make a set of essential QT5 modules and deploy them to /usr/local/qt-5.<x>/ directory. In order to override QT5 framework target location, please, use:
 
 
-    export QT5_PREFIX = "[your local path to Qt5]"
+    export QT5_PREFIX = "[your local path to QT5]"
 
 
 Typical usage:
@@ -26,21 +26,21 @@ By default, the build script will pause just after QtBase configure so that you 
     export STOP_ON_CONFIG = "no"
 
 
-You can also change Qt5 branch (default 5.9), but this is not guaranteed to work correctly (as the Git URL may change from version to version):
+You can also change QT5 branch (default 5.13), but this is not guaranteed to work correctly (as the Git URL may change from version to version):
 
     export QT5_BRANCH = "[branch of your choice]"
     
     
-In order to add or remove a Qt5 module to build you should modify the array QT5_MODULES in the script.
+In order to add or remove a QT5 module to build you should modify the array QT5_MODULES in the script.
 
 
-**Please, note that the script will update your system-default Qt5 to the recently built Qt5. If this behavior is undesired then you should modify the final part of the script.**
+**Please, note that the script will update your system-default QT5 to the recently built QT5. If this behavior is undesired then you should modify the final part of the script.**
 
 
 Qt-Creator
 ---------------------
 
-The Qt-Creator software is used for remote debugging in https://github.com/orpaltech/antenna-analyzer-armbian project. Provided build script requires a pre-built Qt5 framework (see chapter above). Default location is /usr/local/qt-5.9. To override Qt5 framework location, please, use:
+The Qt-Creator software is used for remote debugging in https://github.com/orpaltech/antenna-analyzer-armbian project. Provided build script requires a pre-built Qt5 framework (see chapter above). Default location is /usr/local/qt-5.13/ directory. In order to override QT5 framework location, please, use:
 
 
     export QT5_PREFIX = "[your local path to Qt5]"
