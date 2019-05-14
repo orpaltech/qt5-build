@@ -1,12 +1,12 @@
 TARGET=$1
 [[ -z $TARGET ]] && TARGET="build"
 
-if [ $TARGET != build ] && [ $TARGET != clean ]; then
+if [ $TARGET != build ] && [ $TARGET != clean ] && [ $TARGET != purge ]; then
 	echo "Invalid target"
 	exit 1
 fi
-
-QT5_PREFIX=${QT5_PREFIX:="/usr/local/qt-5.10"}
+QT5_RELEASE="5.13"
+QT5_PREFIX=${QT5_PREFIX:="/usr/local/qt-${QT5_RELEASE}"}
 
 PWD=$(pwd)
 BUILD_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -14,71 +14,79 @@ cd $BUILD_DIR/../
 QTCREATOR_SRC=$(pwd)/qt-creator
 cd $PWD
 
+INSTALL_DIR="/home/sergey/Projects/orpaltech/qtcreator"
+QTCREATOR_URL="git://code.qt.io/qt-creator/qt-creator.git"
 BRANCH="master"
-QMAKE=$QT5_PREFIX/bin/qmake
-if [ ! -e $QMAKE ]; then
+QT5_QMAKE="${QT5_PREFIX}/bin/qmake"
+if [ ! -e $QT5_QMAKE ]; then
 	echo "QT5 make tool not found. Please, build QT5."
 	exit 1
 fi
 
-startsudo() {
+NUM_CPU_CORES=$(grep -c ^processor /proc/cpuinfo)
+
+# ---------------------------------------------------------------------------
+sudo_init() {
+    # Ask for the administrator password upfront
     sudo -v
-    if [[ $? != 0 ]]; then
-        exit 1
-    fi
-    ( while true; do sudo -v; sleep 50; done; ) &
-    SUDO_PID="$!"
-    trap stopsudo SIGINT SIGTERM
-}
-stopsudo() {
-    kill "$SUDO_PID"
-    trap - SIGINT SIGTERM
-    sudo -k
-    exit 0
+    [[ $? != 0 ]] && exit 1
+
+    # Keep-alive: update existing `sudo` timestamp until the calling script has finished
+    ( while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null ) &
 }
 
-startsudo
+sudo_init
+
+$QT5_QMAKE -v
 
 if [ $TARGET = build ]; then
-	wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+	wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
 
-	sudo apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-5.0 main"
+	sudo apt-add-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main"
 	sudo apt-get update
-	sudo apt-get install -y clang-5.0 libclang-5.0-dev lldb-5.0 lld-5.0 llvm-5.0
+	sudo apt-get install -y clang-8 libclang-8-dev lldb-8 lld-8 llvm-8
 
-	export LLVM_INSTALL_DIR=/usr/lib/llvm-5.0/
+	export LLVM_INSTALL_DIR=/usr/lib/llvm-8/
 
-
-	if [ -d $QTCREATOR_SRC ] && [ -d $QTCREATOR_SRC/.git ] ; then
+	if [ -d $QTCREATOR_SRC ] && [ -d "${QTCREATOR_SRC}/.git" ] ; then
 		# update sources
-	        git -C $QTCREATOR_SRC fetch
-        	git -C $QTCREATOR_SRC reset --hard
-	        git -C $QTCREATOR_SRC clean -fd
-	        git -C $QTCREATOR_SRC pull --recurse-submodules
+	        git -C $QTCREATOR_SRC fetch origin --tags --recurse-submodules
+
+		git -C $QTCREATOR_SRC reset --hard
+		git -C $QTCREATOR_SRC clean -fdx
+		git -C $QTCREATOR_SRC submodule update --init
+
+		echo "Checking out branch: ${BRANCH}"
+		git -C $QTCREATOR_SRC checkout -B $BRANCH origin/$BRANCH
+		git -C $QTCREATOR_SRC pull
 	else
 		rm -rf $QTCREATOR_SRC
+
 	        # clone sources
-		git clone --depth 1 --recursive -b $BRANCH https://code.qt.io/qt-creator/qt-creator.git $QTCREATOR_SRC
+		git clone $QTCREATOR_URL -b $BRANCH --recursive $QTCREATOR_SRC
 	fi
 fi
 
-mkdir -p $BUILD_DIR/qt-creator
+mkdir -p "${BUILD_DIR}/qt-creator"
 
-if [ $TARGET = clean ]; then
-	rm -rf $BUILD_DIR/qt-creator/*
-	rm -rf $QTCREATOR_SRC
+if [ $TARGET = clean ] || [ $TARGET = purge ]; then
+	rm -rf "${BUILD_DIR}/qt-creator/*"
+
+	if [[ $TARGET = purge ]] ; then
+		echo "Purge source dir"
+		rm -rf ${QTCREATOR_SRC}
+	fi
+
 	echo "Clean finished."
-	stopsudo &>/dev/null
 	exit 0
 fi
 
-cd $BUILD_DIR/qt-creator/
-$QMAKE $QTCREATOR_SRC/qtcreator.pro
+cd "${BUILD_DIR}/qt-creator"
+$QT5_QMAKE "${QTCREATOR_SRC}/qtcreator.pro"
 
 make qmake_all
-make -j 2
+# QMAKE_CXXFLAGS="-I/home/sergey/Projects/orpaltech/qt5-build/qtcreator/qt-creator/src/shared/qbs/src/shared/qtscript/src/script/api"
+chrt -i 0 make -j${NUM_CPU_CORES}
 
-sudo rm -rf /opt/qtcreator
-sudo make install INSTALL_ROOT=/opt/qtcreator
-
-stopsudo &>/dev/null
+sudo rm -rf $INSTALL_DIR
+sudo make install INSTALL_ROOT=$INSTALL_DIR
